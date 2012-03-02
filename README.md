@@ -5,6 +5,7 @@ A PHP class to create avatars and model images of Minecraft players.
 Creating and displaying the avatar is simple. Say we have the $_GET variable username providing the username and the $__GET variable size providing the size, we would create a file like this.
 
 ```php
+<?php
 require_once '../MinecraftUserImage.php';
 
 try {
@@ -17,6 +18,7 @@ try {
 } catch(MinecraftUserImage_Exception $e) {
     echo '<strong>Error:</strong> '.$e->getMessage();
 }
+?>
 ```
 > The above code is available in examples/avatar.php
 
@@ -24,6 +26,7 @@ try {
 Creating and displaying a model is simple. Say we have the $_GET variable username providing the username and the $__GET variable size providing the size, we would create a file like this.
 
 ```php
+<?php
 require_once '../MinecraftUserImage.php';
 
 try {
@@ -36,5 +39,6 @@ try {
 } catch(MinecraftUserImage_Exception $e) {
     echo '<strong>Error:</strong> '.$e->getMessage();
 }
+?>
 ```
 > The above code is available in examples/model.php
