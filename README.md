@@ -2,6 +2,7 @@
 A PHP class to create avatars and model images of Minecraft players.
 ## Creating an avatar ##
 Creating and displaying the avatar is simple. Say we have the $_GET variable username providing the username and the $__GET variable size providing the size, we would create a file like this.
+
 ```php
 <?php
 require_once '../MinecraftUserImage.php';
