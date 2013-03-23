@@ -74,6 +74,7 @@ class MinecraftUserImage {
         } else {
             throw new MinecraftUserImage_Exception('Invalid Username');
         }
+		return $this;
     }
     
     public function create_avatar($size = 32) {
@@ -90,14 +91,17 @@ class MinecraftUserImage {
 			imagecopyresampled($avatar, $this->_skin, 0, 0, 40, 8, $size, $size, 8, 8);
 		}
         $this->_avatar = $avatar;
+		return $this;
     }
     
     public function display_avatar() {
         if(empty($this->_avatar)) {
             throw new MinecraftUserImage_Exception('Avatar not created');
         }
-        header('Content-Type: image/png');
-        imagepng($this->_avatar);
+		if(!headers_sent()) {
+			header('Content-Type: image/png');
+			imagepng($this->_avatar);
+		}
     }
 
     public function create_model($size = 64) {
@@ -171,15 +175,18 @@ class MinecraftUserImage {
                 $rightLeg, 
                 ($quart * 2), ($quart * 5), 0, 0,
                 (4 * $modSize), (20 * $posSize));
-        $this->model = $model;
+        $this->_model = $model;
+		return $this;
     }
     
     public function display_model() {
         if(empty($this->model)) {
             throw new MinecraftUserImage_Exception('Model not created');
         }
-        header('Content-Type: image/png');
-        imagepng($this->model);
+        if(!headers_sent()) {
+			header('Content-Type: image/png');
+			imagepng($this->_model);
+		}
     }
             
 }

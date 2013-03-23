@@ -9,11 +9,9 @@ try {
 		$type = isset($_GET['type']) && $_GET['type'] == 'model' ? 'model' : 'type';
 		
 		if($type == 'avatar') {
-			$mui->create_avatar($size);
-			$mui->display_avatar();
+			$mui->create_avatar($size)->display_avatar();
 		} else {
-			$mui->create_model($size);
-			$mui->display_model();
+			$mui->create_model($size)->display_model();
 		}
     }
 } catch(MinecraftUserImage_Exception $e) {
