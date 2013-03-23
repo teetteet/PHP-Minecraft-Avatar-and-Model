@@ -10,61 +10,67 @@
 class MinecraftUserImage {
     /**
      * Username of user
-     * @var type 
+     * @var string 
      */
-    private $username;
+    private $_username;
     /**
      * Avatar width
-     * @var type 
+     * @var int 
      */
-    private $avatarX;
+    private $_avatarX;
     /**
      * Avatar height
-     * @var type 
+     * @var int 
      */
-    private $avatarY;
+    private $_avatarY;
     /**
      * Image resource for avatar
-     * @var type 
+     * @var resource 
      */
-    private $avatar;
+    private $_avatar;
     /**
      * Model width
-     * @var type 
+     * @var iny 
      */
-    private $modelX;
+    private $_modelX;
     /**
      * Model height
-     * @var type 
+     * @var iny 
      */
-    private $modelY;
+    private $_modelY;
     /**
      * Image resource for model
-     * @var type 
+     * @var resource 
      */
-    private $model;
+    private $_model;
     /**
      * Image resource from skin
-     * @var type 
+     * @var string 
      */
-    private $skin;
+    private $_skin;
+	/**
+	 * Whether or not to use the helm
+	 * @var boolean
+	 */
+	private $_helm;
     
-    public function __construct($username) {
-        $this->username = $username;
-        $this->avatarX = 32;
-        $this->avatarY = 32;
-        $this->modelX = 64;
-        $this->modelY = 128;
+    public function __construct($username, $helm = true) {
+        $this->_username = $username;
+        $this->_avatarX = 32;
+        $this->_avatarY = 32;
+        $this->_modelX = 64;
+        $this->_modelY = 128;
+		$this->_helm = $helm;
         
         $this->load_skin();
     }
     
     private function load_skin() {
-        $skinUrl = 'http://s3.amazonaws.com/MinecraftSkins/'.$this->username.'.png';
+        $skinUrl = 'http://s3.amazonaws.com/MinecraftSkins/'.$this->_username.'.png';
         $skin = file_get_contents($skinUrl);
         if(strpos($skin, '<?xml version="1.0" encoding="UTF-8"?>') === false) {
             $skinImage = imagecreatefrompng($skinUrl);
-            $this->skin = $skinImage;
+            $this->_skin = $skinImage;
         } else {
             throw new MinecraftUserImage_Exception('Invalid Username');
         }
@@ -74,32 +80,35 @@ class MinecraftUserImage {
         if($size % 2) {
             throw new MinecraftUserImage_Exception('Size must be an even number');
         }
-        if(empty($this->skin)) {
+        if(empty($this->_skin)) {
             throw new MinecraftUserImage_Exception('Skin not loaded');
         }
-        $this->avatarX = $this->avatarY = $size;
+        $this->_avatarX = $this->_avatarY = $size;
         $avatar = imagecreatetruecolor($size, $size);
-        imagecopyresampled($avatar, $this->skin, 0, 0, 8, 8, $size, $size, 8, 8);
-        $this->avatar = $avatar;
+        imagecopyresampled($avatar, $this->_skin, 0, 0, 8, 8, $size, $size, 8, 8);
+		if($this->_helm === true) {
+			imagecopyresampled($avatar, $this->_skin, 0, 0, 40, 8, $size, $size, 8, 8);
+		}
+        $this->_avatar = $avatar;
     }
     
     public function display_avatar() {
-        if(empty($this->avatar)) {
+        if(empty($this->_avatar)) {
             throw new MinecraftUserImage_Exception('Avatar not created');
         }
         header('Content-Type: image/png');
-        imagepng($this->avatar);
+        imagepng($this->_avatar);
     }
 
     public function create_model($size = 64) {
         if($size % 2) {
             throw new MinecraftUserImage_Exception('Size must be an even number');
         }
-        if(empty($this->skin)) {
+        if(empty($this->_skin)) {
             throw new MinecraftUserImage_Exception('Skin not loaded');
         }
-        $width = $this->modelX = $size;
-        $height = $this->modelY = ($size * 2);
+        $width = $this->_modelX = $size;
+        $height = $this->_modelY = ($size * 2);
         $model = imagecreatetruecolor($width, $height);
         $red = imagecolorallocate($model, 255, 0, 0);
         imagecolortransparent($model, $red);
@@ -110,26 +119,33 @@ class MinecraftUserImage {
         // head
         imagecopyresampled(
                 $model, 
-                $this->skin, 
+                $this->_skin, 
                 $quart, 0, 8, 8, 
                 (8 * $modSize), (8 * $posSize), 8, 8);
+		if($this->_helm === true) {
+			imagecopyresampled(
+                $model, 
+                $this->_skin, 
+                $quart, 0, 40, 8, 
+                (8 * $modSize), (8 * $posSize), 8, 8);
+		}
         // left arm
         imagecopyresampled(
                 $model, 
-                $this->skin, 
+                $this->_skin, 
                 0, ($quart * 2), 44, 20, 
                 (4 * $modSize), (12 * $posSize), 4, 12);
         // body
         imagecopyresampled(
                 $model, 
-                $this->skin, 
+                $this->_skin, 
                 $quart, ($quart * 2), 20, 20, 
                 (8 * $modSize), (12 * $posSize), 8, 12);
         // right arm
         $rightArm = imagecreatetruecolor((4 * $modSize), (12 * $posSize));
         imagecopyresampled(
                 $rightArm, 
-                $this->skin, 
+                $this->_skin, 
                 0, 0, 48-1, 20, 
                 (4 * $modSize), (12 * $posSize), -4, 12);
         imagecopy(
@@ -140,14 +156,14 @@ class MinecraftUserImage {
         // left leg
         imagecopyresampled(
                 $model, 
-                $this->skin, 
+                $this->_skin, 
                 $quart, ($quart * 5), 4, 20, 
                 (4 * $modSize), (20 * $posSize), 4, 20);
         // right leg
         $rightLeg = imagecreatetruecolor((4 * $modSize), (20 * $posSize));
         imagecopyresampled(
                 $rightLeg, 
-                $this->skin, 
+                $this->_skin, 
                 0, 0, 8-1, 20, 
                 (4 * $modSize), (20 * $posSize), -4, 20);
         imagecopy(
