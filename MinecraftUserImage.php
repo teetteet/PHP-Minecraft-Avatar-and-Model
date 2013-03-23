@@ -53,7 +53,12 @@ class MinecraftUserImage {
 	 * @var boolean
 	 */
 	private $_helm;
-    
+    /**
+	 * Standard constructor
+	 * 
+	 * @param string $username The users username
+	 * @param boolean $helm Whether or not the helm should be displayed
+	 */
     public function __construct($username, $helm = true) {
         $this->_username = $username;
         $this->_avatarX = 32;
@@ -64,7 +69,12 @@ class MinecraftUserImage {
         
         $this->load_skin();
     }
-    
+    /**
+	 * Loads the skin from the minecraft cdn
+	 * 
+	 * @return \MinecraftUserImage
+	 * @throws MinecraftUserImage_Exception 
+	 */
     private function load_skin() {
         $skinUrl = 'http://s3.amazonaws.com/MinecraftSkins/'.$this->_username.'.png';
         $skin = file_get_contents($skinUrl);
@@ -76,7 +86,13 @@ class MinecraftUserImage {
         }
 		return $this;
     }
-    
+    /**
+	 * Creates the avatar
+	 * 
+	 * @param int $size The size of the avatar to create
+	 * @return \MinecraftUserImage
+	 * @throws MinecraftUserImage_Exception 
+	 */
     public function create_avatar($size = 32) {
         if($size % 2) {
             throw new MinecraftUserImage_Exception('Size must be an even number');
@@ -93,7 +109,11 @@ class MinecraftUserImage {
         $this->_avatar = $avatar;
 		return $this;
     }
-    
+    /**
+	 * Outputs the avatar as a png image
+	 * 
+	 * @throws MinecraftUserImage_Exception 
+	 */
     public function display_avatar() {
         if(empty($this->_avatar)) {
             throw new MinecraftUserImage_Exception('Avatar not created');
@@ -103,7 +123,13 @@ class MinecraftUserImage {
 			imagepng($this->_avatar);
 		}
     }
-
+	/**
+	 * Creates the model
+	 * 
+	 * @param int $size The size of the model to create
+	 * @return \MinecraftUserImage
+	 * @throws MinecraftUserImage_Exception 
+	 */
     public function create_model($size = 64) {
         if($size % 2) {
             throw new MinecraftUserImage_Exception('Size must be an even number');
@@ -178,7 +204,11 @@ class MinecraftUserImage {
         $this->_model = $model;
 		return $this;
     }
-    
+    /**
+	 * Outpus the model as a png 
+	 * 
+	 * @throws MinecraftUserImage_Exception 
+	 */
     public function display_model() {
         if(empty($this->model)) {
             throw new MinecraftUserImage_Exception('Model not created');
