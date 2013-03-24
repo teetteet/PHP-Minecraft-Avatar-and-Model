@@ -77,7 +77,7 @@ class MinecraftUserImage {
 	 */
     private function load_skin() {
         $skinUrl = 'http://s3.amazonaws.com/MinecraftSkins/'.$this->_username.'.png';
-        $skin = file_get_contents($skinUrl);
+        $skin = @file_get_contents($skinUrl);
         if(strpos($skin, '<?xml version="1.0" encoding="UTF-8"?>') === false) {
             $skinImage = imagecreatefrompng($skinUrl);
             $this->_skin = $skinImage;
